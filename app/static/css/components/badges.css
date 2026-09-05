@@ -1,0 +1,33 @@
+/* ========================================================================== *
+ * components/badges.css — Etiquetas de tipo, estado y progreso.
+ * ========================================================================== */
+
+.etiqueta {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.etiqueta-ingreso { background: rgba(117, 250, 199, 0.2); color: var(--color-verde-suave); }
+.etiqueta-gasto { background: rgba(255, 218, 214, 0.5); color: var(--color-rojo-fuerte); }
+
+/* Estados de anomalías */
+.etiqueta-critico { background: var(--color-rojo-suave); color: var(--color-rojo-fuerte); }
+.etiqueta-aviso { background: var(--color-amarillo-suave); color: var(--color-amarillo-fuerte); }
+.etiqueta-revisado {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-verde-profundo);
+  font-size: 12px;
+  font-weight: 600;
+}
+.etiqueta-revisado svg { width: 15px; height: 15px; }
+
+/* Estados de metas */
+.etiqueta-meta-cercana { background: rgba(85, 221, 172, 0.2); color: var(--color-verde-profundo); }
+.etiqueta-meta-cumplida { background: rgba(117, 250, 199, 0.3); color: var(--color-verde-profundo); }
+.etiqueta-meta-avance { background: rgba(81, 217, 254, 0.2); color: #00677d; }
+.etiqueta-meta-activa { background: var(--color-lila); color: var(--color-primario); }

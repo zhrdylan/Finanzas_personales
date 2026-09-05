@@ -1,0 +1,22 @@
+/* ========================================================================== *
+ * utilities.css — Clases utilitarias pequeñas (usadas por el JS).
+ * ========================================================================== */
+
+.texto-flujo {
+  background: var(--gradiente-flujo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.ocultar-movil { display: inline !important; }
+.solo-movil { display: none !important; }
+
+.sombra-flotante { box-shadow: var(--sombra-tarjeta-lg); }
+
+.truncar {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,59 @@
+/* ========================================================================== *
+ * tokens.css — Sistema de diseño del prototipo "Flux" (Modern Corporate +
+ * Flow Thread), adaptado a CSS puro sin frameworks.
+ * ========================================================================== */
+
+:root {
+  /* ---------- Paleta ---------- */
+  --color-fondo: #F6F8FC;            /* fondo general */
+  --color-superficie: #ffffff;       /* tarjetas */
+  --color-texto: #0d1843;            /* navy principal */
+  --color-texto-medio: #424655;
+  --color-texto-suave: #737686;
+  --color-borde: #c2c6d7;
+
+  --color-primario: #0053ce;         /* azul Flux */
+  --color-primario-hover: #0040a2;
+  --color-cian: #51d9fe;
+  --color-menta: #55ddac;
+  --color-menta-suave: #75fac7;
+
+  --color-verde: #0B8A64;            /* ingresos */
+  --color-verde-suave: #008561;
+  --color-verde-profundo: #00694c;
+  --color-rojo: #E5484D;             /* gastos */
+  --color-rojo-fuerte: #ba1a1a;
+
+  --color-lavanda: #ececff;          /* fondos de control tipo toggle */
+  --color-lila: #f3f2ff;             /* hover suave */
+  --color-nube: #fbf8ff;             /* cabeceras de tabla / modales */
+  --color-crema: #f0efff;            /* anillos de gráficos */
+
+  --color-amarillo-suave: #FEF3C7;
+  --color-amarillo-fuerte: #D97706;
+  --color-rojo-suave: #ffdad6;
+
+  /* ---------- Tipografía ---------- */
+  --fuente-texto: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --fuente-display: "Plus Jakarta Sans", "Inter", "Segoe UI", system-ui, sans-serif;
+
+  /* ---------- Sombras (navy mist) ---------- */
+  --sombra-tarjeta: 0 4px 16px rgba(14, 30, 73, 0.08);
+  --sombra-tarjeta-lg: 0 10px 30px rgba(14, 30, 73, 0.12);
+  --sombra-suave: 0 1px 2px rgba(14, 30, 73, 0.06);
+
+  /* ---------- Radios ---------- */
+  --radio-tarjeta: 16px;
+  --radio-control: 12px;
+  --radio-chip: 999px;
+
+  /* ---------- Gradiente de marca (Flow Thread) ---------- */
+  --gradiente-flujo: linear-gradient(90deg, #0053ce 0%, #51d9fe 50%, #55ddac 100%);
+
+  /* ---------- Layout ---------- */
+  --ancho-sidebar: 260px;
+  --alto-topbar: 72px;
+
+  /* ---------- Transiciones ---------- */
+  --transicion: 180ms ease;
+}

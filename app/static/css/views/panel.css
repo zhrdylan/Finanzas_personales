@@ -1,0 +1,70 @@
+/* ========================================================================== *
+ * views/panel.css — Vista Resumen: KPIs, gráficos, tabla de recientes.
+ * ========================================================================== */
+
+.rejilla-graficos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+@media (min-width: 1024px) { .rejilla-graficos { grid-template-columns: 1fr 2fr; } }
+
+.tarjeta-grafico {
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+}
+
+.grafico-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.grafico-cabecera h3 { margin-bottom: 0; }
+.grafico-subtitulo { font-size: 12px; color: var(--color-texto-suave); margin-top: 2px; }
+
+.grafico-envoltura {
+  position: relative;
+  flex: 1;
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+}
+
+/* Leyenda de la dona */
+.lista-leyenda {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+  padding-top: 14px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(194, 198, 215, 0.2);
+}
+.lista-leyenda .leyenda-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.leyenda-item { font-size: 12px; font-weight: 500; color: var(--color-texto-medio); }
+.leyenda-nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.leyenda-punto { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.leyenda-porcentaje { font-weight: 700; color: var(--color-texto); margin-left: auto; }
+
+.leyenda-linea { display: flex; gap: 16px; }
+.linea-muestra { width: 18px; height: 6px; border-radius: 999px; display: inline-block; }
+.linea-ingreso { background: var(--gradiente-flujo); }
+.linea-gasto { background: var(--color-rojo); }
+.punto-muestra { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+.punto-ahorro { background: var(--color-menta); }
+
+/* FASE 3: figuras semánticas + leyendas como lista */
+figure.grafico-envoltura { margin: 0; }
+ul.leyenda-linea { list-style: none; margin: 0; padding: 0; }
+.leyenda-linea > li { list-style: none; }
+i.linea-muestra, i.punto-muestra, i.leyenda-punto, i.figura-icono { font-style: normal; }
+output.prediccion-valor { display: block; }
+small.leyenda-nombre { font-size: inherit; }

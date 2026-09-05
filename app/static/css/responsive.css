@@ -1,0 +1,41 @@
+/* ========================================================================== *
+ * responsive.css — Comportamiento móvil global (sidebar, topbar, tablas).
+ * ========================================================================== */
+
+@media (max-width: 767.98px) {
+  .solo-movil { display: inline-flex !important; }
+  .ocultar-movil { display: none !important; }
+
+  .topbar { flex-wrap: wrap; min-height: auto; padding: 10px 12px; gap: 8px; }
+  .topbar-izquierda { flex: 1 1 auto; gap: 8px; min-width: 0; }
+  .topbar-titulo { font-size: 17px; flex: 1 1 auto; }
+  .selector-mes { order: 3; width: 100%; margin-top: 4px; }
+  .selector-mes input { width: 100%; }
+  .topbar-acciones { gap: 6px; }
+
+  .main { padding: 16px 12px 40px; }
+
+  table.tabla-datos thead th,
+  table.tabla-datos td { padding: 12px 14px; }
+
+  .banner-anomalias { flex-direction: column; align-items: flex-start; }
+  .banner-anomalias .btn { align-self: flex-end; }
+
+  .toast-zona { bottom: 12px; right: 12px; left: 12px; max-width: none; }
+}
+
+@media (max-width: 480px) {
+  .campo-rango-fechas { width: 100%; }
+  .campo-buscar { max-width: none; width: 100%; }
+  .kpi { min-height: 120px; }
+  .prediccion-valor { font-size: 30px; }
+}
+
+/* Accesibilidad: respeta la preferencia de menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

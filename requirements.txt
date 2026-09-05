@@ -1,0 +1,38 @@
+# ============================================================ #
+# Finanzas Personales - dependencias de producción
+# Probadas con Python 3.11+ (recomendado 3.12)
+# Instalación:  pip install -r requirements.txt
+# ============================================================ #
+
+# --- API / servidor ---
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32          # formularios OAuth2 del login
+email-validator==2.3.0            # validación de correos (EmailStr)
+pydantic==2.13.5
+pydantic-settings==2.15.0         # configuración desde .env
+
+# --- Base de datos (MySQL 9.6 + ORM + migraciones) ---
+# Único motor soportado: MySQL 9.6.x. No existe soporte ni fallback a SQLite.
+SQLAlchemy==2.0.52
+alembic==1.19.1
+aiomysql==0.3.2                   # driver asíncrono de MySQL (protocolo MySQL)
+
+# --- Seguridad ---
+PyJWT==2.13.0                     # JWT (access + refresh). Sustituye a python-jose:
+                                  # su dependencia transitiva `ecdsa` tiene una
+                                  # vulnerabilidad conocida sin versión corregida.
+cryptography==50.0.1              # requerido por PyMySQL/aiomysql para
+                                  # autenticación caching_sha2_password (MySQL 8+/9.x)
+bcrypt==5.0.0                     # hash de contraseñas (uso directo, sin passlib)
+slowapi==0.1.10                   # rate limiting del login
+
+# --- Análisis de datos (solo módulo analysis) ---
+pandas==3.0.5
+scikit-learn==1.9.0
+
+# --- Tasas de cambio (solo módulo exchange_rates, backend) ---
+httpx==0.28.1                      # cliente HTTP de Frankfurter (v2, sin API key)
+
+# --- Exportación (solo módulo exports) ---
+reportlab==5.0.1                   # generación de PDF en backend (BytesIO)

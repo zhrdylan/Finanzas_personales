@@ -1,0 +1,41 @@
+# Entorno (.env con secretos NUNCA se sube; .env.example sí)
+.env
+!.env.example
+.env.local
+.env.*.local
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+requirements-dev.txt
+pyproject.toml
+
+
+# Bases de datos locales (por seguridad: NUNCA deben existir; el proyecto usa MySQL)
+*.db
+
+
+# Herramientas de seguridad
+bandit_report.json
+pip-audit-report.json
+
+# Empaquetado / cobertura
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+tests/
+
+
+# Logs
+*.log
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

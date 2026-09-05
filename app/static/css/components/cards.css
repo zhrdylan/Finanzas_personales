@@ -1,0 +1,149 @@
+/* ========================================================================== *
+ * components/cards.css — Tarjetas, KPIs, banners y chips.
+ * ========================================================================== */
+
+.tarjeta {
+  background: var(--color-superficie);
+  border: 1px solid rgba(194, 198, 215, 0.3);
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta);
+  padding: 20px;
+  transition: box-shadow var(--transicion);
+}
+.tarjeta:hover { box-shadow: var(--sombra-tarjeta-lg); }
+
+.tarjeta > h3 {
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+/* ------------------------------- KPI cards ------------------------------- */
+.kpi-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 640px)  { .kpi-rejilla { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .kpi-rejilla { grid-template-columns: repeat(4, 1fr); } }
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 150px;
+}
+
+.kpi-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.kpi-etiqueta {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-texto-medio);
+}
+.kpi-etiqueta-destacada { font-weight: 700; color: var(--color-texto); }
+
+.kpi-icono {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.kpi-icono svg { width: 16px; height: 16px; }
+/* El svg puede SER .kpi-icono (reemplazo directo sin wrapper): conserva el
+   círculo de 32px con el glifo centrado mediante padding. */
+svg.kpi-icono { width: 32px; height: 32px; padding: 8px; box-sizing: border-box; }
+.kpi-icono-ingreso { background: rgba(117, 250, 199, 0.2); color: var(--color-verde); }
+.kpi-icono-gasto { background: rgba(255, 218, 214, 0.6); color: var(--color-rojo); }
+.kpi-icono-balance { background: rgba(0, 83, 206, 0.1); color: var(--color-primario); }
+
+.kpi-valor {
+  font-family: var(--fuente-display);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 1024px) { .kpi-valor { font-size: 28px; } }
+
+.valor-ingreso { color: var(--color-verde); }
+.valor-gasto { color: var(--color-rojo); }
+.valor-balance { color: var(--color-primario); }
+
+.kpi-nota { font-size: 12px; font-weight: 600; color: var(--color-texto-medio); margin-top: 4px; }
+
+/* FASE 3: rejilla KPI como lista + etiquetas semánticas */
+ul.kpi-rejilla { list-style: none; margin: 0; padding: 0; }
+.kpi-rejilla > li { list-style: none; min-width: 0; }
+.kpi-rejilla > li > .kpi { height: 100%; }
+h3.kpi-etiqueta { margin: 0; }
+output.kpi-valor { display: block; }
+a.kpi-enlace { text-decoration: none; color: inherit; }
+i.kpi-icono, i.banner-icono { font-style: normal; }
+em.etiqueta, em.chip { font-style: normal; }
+small.kpi-nota { display: block; }
+#btn-nuevo-movimiento small, #btn-nuevo-movimiento i { font-size: inherit; }
+#btn-nuevo-movimiento i { font-style: normal; display: inline-flex; }
+#btn-nuevo-movimiento svg { width: 16px; height: 16px; }
+
+/* Tarjeta balance destacada: borde superior con gradiente de marca */
+.kpi-destacado {
+  border-top: 4px solid;
+  border-image: var(--gradiente-flujo) 1;
+}
+.kpi-enlace { cursor: pointer; }
+.kpi-enlace:hover { border-color: rgba(0, 83, 206, 0.4); }
+
+/* Banner de anomalías */
+.banner-anomalias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  border-left: 4px solid #F59E0B;
+  padding: 16px 20px;
+}
+.banner-anomalias h3 { font-size: 14px; margin-bottom: 2px; }
+.banner-anomalias p { font-size: 13px; color: var(--color-texto-medio); }
+.banner-cuerpo { display: flex; align-items: center; gap: 14px; }
+
+.banner-icono {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--color-amarillo-suave);
+  color: var(--color-amarillo-fuerte);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.banner-icono svg { width: 20px; height: 20px; }
+/* Igual que .kpi-icono: el svg puede ser el propio círculo de 40px. */
+svg.banner-icono { width: 40px; height: 40px; padding: 10px; box-sizing: border-box; }
+
+/* Chips / etiquetas pequeñas */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+}
+.chip-menta {
+  background: rgba(117, 250, 199, 0.25);
+  color: var(--color-verde-suave);
+}
+.chip-lila {
+  background: var(--color-lila);
+  color: var(--color-primario);
+  border-radius: var(--radio-chip);
+  padding: 6px 14px;
+}

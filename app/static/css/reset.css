@@ -1,0 +1,27 @@
+/* ========================================================================== *
+ * reset.css — Normalización mínima.
+ * ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+button { cursor: pointer; background: none; border: none; padding: 0; }
+
+a { color: inherit; }
+
+ul[class], ol[class] { list-style: none; padding: 0; }
+
+body.sin-scroll { overflow: hidden; }

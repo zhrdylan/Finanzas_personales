@@ -1,0 +1,178 @@
+/* ========================================================================== *
+ * components/tables.css — Tablas de datos (movimientos, anomalías, recientes).
+ * ========================================================================== */
+
+.tarjeta-tabla { padding: 0; overflow: hidden; }
+
+.barra-flujo { height: 4px; background: var(--gradiente-flujo); }
+
+.tabla-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(194, 198, 215, 0.3);
+}
+.tabla-cabecera h3 { font-size: 16px; }
+.tabla-cabecera-titulo { display: flex; align-items: center; gap: 12px; }
+
+.tabla-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  background: var(--color-nube);
+  border-bottom: 1px solid rgba(194, 198, 215, 0.3);
+  font-size: 12px;
+  color: var(--color-texto-medio);
+}
+.tabla-neto { font-weight: 700; }
+.tabla-neto.positivo { color: var(--color-verde); }
+.tabla-neto.negativo { color: var(--color-rojo); }
+
+.tabla-scroll { overflow-x: auto; }
+
+table.tabla-datos {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+table.tabla-datos thead tr {
+  background: var(--color-nube);
+  border-bottom: 1px solid rgba(194, 198, 215, 0.3);
+}
+table.tabla-datos thead th {
+  padding: 14px 24px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-texto-medio);
+  white-space: nowrap;
+}
+table.tabla-datos tbody tr {
+  border-bottom: 1px solid rgba(194, 198, 215, 0.2);
+  transition: background var(--transicion);
+}
+table.tabla-datos tbody tr:hover { background: rgba(243, 242, 255, 0.6); }
+table.tabla-datos td { padding: 14px 24px; vertical-align: middle; }
+table.tabla-datos td.derecha, table.tabla-datos th.derecha { text-align: right; }
+table.tabla-datos td.centro, table.tabla-datos th.centro { text-align: center; }
+
+.celda-monto { font-weight: 600; white-space: nowrap; }
+.celda-monto.ingreso { color: var(--color-verde); }
+.celda-monto.gasto { color: var(--color-texto); }
+
+.celda-concepto { font-weight: 600; color: var(--color-texto); min-width: 160px; }
+.celda-concepto .celda-nota {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-texto-suave);
+  margin-top: 2px;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.celda-fecha { color: var(--color-texto-medio); white-space: nowrap; font-size: 13px; }
+.celda-acciones { white-space: nowrap; }
+.celda-acciones .acciones { display: inline-flex; gap: 6px; }
+
+/* Categoría como badge con punto de color */
+.badge-categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px;
+  border-radius: var(--radio-chip);
+  background: var(--color-lila);
+  border: 1px solid rgba(194, 198, 215, 0.4);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-texto);
+  white-space: nowrap;
+}
+.punto-categoria {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Cellda con icono circular (concepto) */
+.celda-figura {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.figura-icono {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.figura-icono.ingreso { background: rgba(117, 250, 199, 0.2); color: var(--color-verde-suave); }
+.figura-icono.gasto { background: var(--color-lavanda); color: var(--color-texto); }
+.figura-icono svg { width: 15px; height: 15px; }
+/* El svg puede SER .figura-icono (reemplazo directo): círculo 32px + padding. */
+svg.figura-icono { width: 32px; height: 32px; padding: 8px; box-sizing: border-box; }
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 14px;
+  border-top: 1px solid rgba(194, 198, 215, 0.3);
+}
+.paginacion button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-texto-medio);
+  transition: all var(--transicion);
+}
+.paginacion button:hover:not(:disabled) { background: var(--color-lila); color: var(--color-primario); }
+.paginacion button[aria-current="page"] {
+  background: var(--color-primario);
+  color: #fff;
+}
+.paginacion button:disabled { opacity: 0.4; cursor: default; }
+.paginacion .paginacion-info { font-size: 12px; color: var(--color-texto-suave); padding: 0 8px; }
+
+/* FASE 3: botones de orden en th, filas con th scope=row, paginación en lista */
+table.tabla-datos th[scope="row"] { text-align: left; font-weight: 600; }
+.btn-orden {
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-orden:hover { color: var(--color-primario); }
+.paginacion-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.paginacion-lista > li { list-style: none; }
+i.punto-categoria, i.leyenda-punto { font-style: normal; }
+small.badge-categoria, small.celda-nota { font-size: inherit; }
+strong.celda-concepto-texto, strong.celda-concepto { font-weight: 600; }

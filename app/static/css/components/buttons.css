@@ -1,0 +1,104 @@
+/* ========================================================================== *
+ * components/buttons.css — Botones del sistema (estilo Flux).
+ * ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radio-control);
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid transparent;
+  transition: all var(--transicion);
+  text-decoration: none;
+}
+.btn svg { width: 16px; height: 16px; }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.btn-primario {
+  background: var(--color-primario);
+  color: #fff;
+  box-shadow: var(--sombra-suave);
+}
+.btn-primario:hover:not(:disabled) { background: var(--color-primario-hover); }
+
+.btn-secundario {
+  background: #fff;
+  border-color: rgba(194, 198, 215, 0.6);
+  color: var(--color-primario);
+}
+.btn-secundario:hover:not(:disabled) { background: var(--color-lila); }
+
+.btn-contorno {
+  background: #fff;
+  border-color: rgba(194, 198, 215, 0.6);
+  color: var(--color-texto);
+}
+.btn-contorno:hover { background: var(--color-lila); }
+
+.btn-fantasma { color: var(--color-primario); }
+.btn-fantasma:hover { background: var(--color-lila); }
+
+.btn-peligro {
+  background: #fff;
+  border-color: var(--color-rojo-suave);
+  color: var(--color-rojo-fuerte);
+}
+.btn-peligro:hover:not(:disabled) { background: rgba(255, 218, 214, 0.4); }
+
+.btn-sutil {
+  background: var(--color-lila);
+  color: var(--color-primario);
+}
+.btn-sutil:hover { background: var(--color-primario); color: #fff; }
+
+.btn-bloque { width: 100%; }
+.btn-aportar { padding: 6px 12px; font-size: 12px; }
+
+/* Botón de icono pequeño para acciones de fila */
+.btn-accion {
+  display: inline-grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  color: var(--color-texto-suave);
+  transition: all var(--transicion);
+}
+.btn-accion svg { width: 15px; height: 15px; }
+.btn-accion:hover { background: var(--color-lila); color: var(--color-primario); }
+.btn-accion.peligro:hover { background: rgba(255, 218, 214, 0.4); color: var(--color-rojo-fuerte); }
+
+/* Botones de menú contextual */
+.btn-item-menu {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 8px;
+  color: var(--color-texto);
+}
+.btn-item-menu:hover { background: var(--color-lila); }
+.btn-item-menu.peligro { color: var(--color-rojo-fuerte); }
+.btn-item-menu.peligro:hover { background: rgba(255, 218, 214, 0.4); }
+.btn-item-menu svg { width: 14px; height: 14px; }
+
+/* Enlace de acción (cabeceras de tabla) */
+.enlace-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-primario);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.enlace-accion:hover { color: var(--color-primario-hover); text-decoration: underline; }
+.enlace-accion svg { width: 14px; height: 14px; }

@@ -1,0 +1,78 @@
+/* ========================================================================== *
+ * views/perfil.css — Perfil: tarjeta de usuario, preferencias, seguridad.
+ * ========================================================================== */
+
+.tarjeta-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  padding-top: 48px;
+}
+
+/* Franja superior con gradiente de marca (detalle del prototipo) */
+.tarjeta-perfil::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 110px;
+  background: linear-gradient(90deg,
+    rgba(0, 83, 206, 0.1), rgba(81, 217, 254, 0.1), rgba(85, 221, 172, 0.1));
+  pointer-events: none;
+}
+
+.perfil-aro {
+  position: relative;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--gradiente-flujo);
+  box-shadow: var(--sombra-suave);
+  margin-bottom: 6px;
+}
+.perfil-aro .avatar-xl { background: #fff; color: var(--color-primario); }
+
+.perfil-nombre { font-size: 22px; position: relative; }
+.perfil-correo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-texto-suave);
+  position: relative;
+}
+
+/* Filas de preferencias */
+.preferencia-fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.preferencia-datos { display: flex; align-items: flex-start; gap: 12px; }
+.preferencia-datos h4 { font-size: 14px; }
+.preferencia-datos p { font-size: 12px; color: var(--color-texto-suave); margin-top: 2px; }
+
+.preferencia-icono {
+  width: 36px; height: 36px;
+  border-radius: var(--radio-control);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.preferencia-icono svg { width: 18px; height: 18px; }
+.icono-moneda { background: rgba(117, 250, 199, 0.3); color: var(--color-verde-profundo); }
+
+.tarjeta .preferencia-fila + .preferencia-fila { margin-top: 18px; }
+
+#preferencia-moneda { width: auto; font-size: 13px; font-weight: 600; }
+
+/* Exportar mis datos (CSV/PDF generados en el backend) */
+.export-acciones { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.export-acciones .btn:disabled { opacity: 0.55; cursor: wait; }
+#exportar-estado { margin-top: 10px; }

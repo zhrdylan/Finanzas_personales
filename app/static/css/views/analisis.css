@@ -1,0 +1,79 @@
+/* ========================================================================== *
+ * views/analisis.css — Hero de predicción + gráfico de ahorro + anomalías.
+ * ========================================================================== */
+
+.hero-prediccion {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1024px) {
+  .hero-prediccion { grid-template-columns: 1fr auto; align-items: center; }
+}
+
+/* Resplandor decorativo del prototipo */
+.hero-prediccion::before {
+  content: "";
+  position: absolute;
+  right: -60px;
+  top: -60px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(81, 217, 254, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.hero-cuerpo { position: relative; display: flex; flex-direction: column; gap: 10px; }
+.hero-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+.hero-titulo svg { width: 20px; height: 20px; color: var(--color-primario); }
+
+.prediccion-valor {
+  font-family: var(--fuente-display);
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) { .prediccion-valor { font-size: 40px; } }
+
+.hero-nota { font-size: 13px; color: var(--color-texto-medio); max-width: 60ch; }
+
+/* Distribución proyectada (barras) */
+.distribucion-proyectada {
+  width: 100%;
+  background: var(--color-nube);
+  border: 1px solid rgba(194, 198, 215, 0.3);
+  border-radius: var(--radio-control);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (min-width: 1024px) { .distribucion-proyectada { max-width: 380px; } }
+.distribucion-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.distribucion-fila { display: flex; flex-direction: column; gap: 5px; }
+.distribucion-rotulo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-texto-medio);
+}
+.distribucion-rotulo strong { color: var(--color-texto); }
+.barra-fondo {
+  width: 100%;
+  height: 8px;
+  background: var(--color-lavanda);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.barra-progreso { height: 100%; border-radius: 999px; }

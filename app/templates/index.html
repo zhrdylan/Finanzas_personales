@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Flux — Aplicación de finanzas personales: movimientos, categorías, metas de ahorro, análisis predictivo y moneda configurable.">
+  <title>Flux — Tu dinero, en movimiento</title>
+  <link rel="icon" href="/static/img/favicon.ico">
+
+  <!-- CSS modular  -->
+  <link rel="stylesheet" href="/static/css/tokens.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/reset.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/base.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/utilities.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/layout.css?v=2.5">
+  <link rel="stylesheet" href="/static/css/components/buttons.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/components/forms.css?v=2.3">
+  <link rel="stylesheet" href="/static/css/components/cards.css?v=2.2">
+  <link rel="stylesheet" href="/static/css/components/tables.css?v=2.2">
+  <link rel="stylesheet" href="/static/css/components/badges.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/components/modals.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/components/drawer.css?v=2.2">
+  <link rel="stylesheet" href="/static/css/components/toast.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/views/auth.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/views/panel.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/views/movimientos.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/views/categorias.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/views/metas.css?v=2.6">
+  <link rel="stylesheet" href="/static/css/views/analisis.css?v=2.0">
+  <link rel="stylesheet" href="/static/css/views/perfil.css?v=2.1">
+  <link rel="stylesheet" href="/static/css/responsive.css?v=2.2">
+</head>
+<body>
+  <a class="enlace-saltar" href="#contenido-main">Saltar al contenido principal</a>
+
+  <div id="app">
+    <!-- Estado inicial: se muestra mientras arranca el router -->
+    <div class="pantalla-carga" role="status">
+      <i class="spinner spinner-grande" aria-hidden="true"></i>
+      <p>Cargando Flux…</p>
+    </div>
+  </div>
+
+  <!-- ========================= VISTA: INICIAR SESIÓN / REGISTRO ========================= -->
+  <template id="tpl-auth">
+    <main class="auth-fondo">
+      <section class="tarjeta auth-tarjeta" aria-labelledby="auth-titulo">
+        <img class="auth-logo" src="/static/img/logo-icon.png" alt="Flux" width="56" height="56">
+        <h1 id="auth-titulo">Flux</h1>
+        <p class="auth-eslogan">Tu dinero, en movimiento</p>
+
+        <!-- Conmutador de pestañas (login / registro), estilo del prototipo -->
+        <div class="conmutador" role="tablist" aria-label="Iniciar sesión o crear cuenta">
+          <button type="button" role="tab" id="tab-login" aria-selected="true">Iniciar sesión</button>
+          <button type="button" role="tab" id="tab-registro" aria-selected="false">Crear cuenta</button>
+        </div>
+
+        <form id="form-login" novalidate>
+          <div class="campo">
+            <label for="login-usuario">Usuario o correo</label>
+            <input id="login-usuario" name="usuario" type="text" autocomplete="username"
+                   required minlength="3" maxlength="255" placeholder="usuario o correo@ejemplo.com">
+            <p class="campo-error" id="err-login-usuario" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="login-password">Contraseña</label>
+            <input id="login-password" name="password" type="password"
+                   autocomplete="current-password" required placeholder="Tu contraseña">
+            <p class="campo-error" id="err-login-password" role="alert" hidden></p>
+          </div>
+          <p class="alerta alerta-error" id="login-alerta" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primario btn-bloque">Ingresar a Flux</button>
+        </form>
+
+        <form id="form-registro" novalidate hidden>
+          <div class="campo">
+            <label for="reg-nombre">Nombre completo</label>
+            <input id="reg-nombre" type="text" autocomplete="name" required
+                   minlength="2" maxlength="100" placeholder="Tu nombre">
+            <p class="campo-error" id="err-reg-nombre" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="reg-usuario">Usuario</label>
+            <input id="reg-usuario" type="text" autocomplete="username" required
+                   minlength="3" maxlength="50" pattern="[a-zA-Z0-9_]+"
+                   placeholder="letras, números y guion bajo">
+            <p class="campo-error" id="err-reg-usuario" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="reg-email">Correo electrónico</label>
+            <input id="reg-email" type="email" autocomplete="email" required
+                   maxlength="255" placeholder="correo@ejemplo.com">
+            <p class="campo-error" id="err-reg-email" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="reg-password">Contraseña</label>
+            <input id="reg-password" type="password" autocomplete="new-password" required
+                   minlength="8" maxlength="72" placeholder="mínimo 8 caracteres, 1 letra y 1 número">
+            <p class="campo-error" id="err-reg-password" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="reg-password2">Confirmar contraseña</label>
+            <input id="reg-password2" type="password" autocomplete="new-password" required
+                   minlength="8" maxlength="72">
+            <p class="campo-error" id="err-reg-password2" role="alert" hidden></p>
+          </div>
+          <p class="alerta alerta-error" id="registro-alerta" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primario btn-bloque">Crear cuenta</button>
+        </form>
+      </section>
+    </main>
+  </template>
+
+  <!-- ========================= CAPA PRINCIPAL (SHELL) ========================= -->
+  <template id="tpl-shell">
+    <div class="layout">
+      <div class="nav-overlay" id="nav-overlay" hidden></div>
+
+      <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+        <div class="sidebar-marca">
+          <img class="marca-logo" src="/static/img/logo-icon.png" alt="Flux" width="40" height="40">
+          <div>
+            <p class="marca-nombre">Flux</p>
+            <p class="marca-eslogan">Tu dinero, en movimiento</p>
+          </div>
+        </div>
+
+        <nav aria-label="Secciones">
+          <ul class="sidebar-nav">
+            <li><a href="#/panel" data-ruta="/panel"><i class="nav-icono" data-icono="panel" aria-hidden="true"></i>Resumen</a></li>
+            <li><a href="#/movimientos" data-ruta="/movimientos"><i class="nav-icono" data-icono="movimientos" aria-hidden="true"></i>Movimientos</a></li>
+            <li><a href="#/categorias" data-ruta="/categorias"><i class="nav-icono" data-icono="categorias" aria-hidden="true"></i>Categorías</a></li>
+            <li><a href="#/analisis" data-ruta="/analisis"><i class="nav-icono" data-icono="analisis" aria-hidden="true"></i>Análisis</a></li>
+            <li><a href="#/metas" data-ruta="/metas"><i class="nav-icono" data-icono="metas" aria-hidden="true"></i>Metas de ahorro</a></li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-pie">
+          <a class="chip-usuario" id="chip-usuario" href="#/perfil" title="Ver perfil">
+            <i class="avatar" id="avatar-iniciales" aria-hidden="true">?</i>
+            <div class="chip-datos">
+              <strong class="chip-nombre" id="usuario-nombre"></strong>
+              <small class="chip-alias" id="usuario-alias"></small>
+            </div>
+          </a>
+          <button type="button" class="btn btn-fantasma btn-bloque btn-salir" id="btn-salir">
+            <i class="nav-icono" data-icono="salir" aria-hidden="true"></i>
+            Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      <div class="contenido">
+        <header class="topbar">
+          <div class="topbar-izquierda">
+            <button type="button" class="btn-icono solo-movil" id="btn-menu"
+                    aria-label="Abrir menú de navegación" aria-expanded="false"
+                    aria-controls="sidebar">
+              <i data-icono="menu" aria-hidden="true"></i>
+            </button>
+            <h1 class="topbar-titulo" id="titulo-seccion">Resumen</h1>
+            <!-- Selector de mes (solo visible en la vista Resumen) -->
+            <div class="selector-mes" id="selector-mes" hidden>
+              <label class="solo-lectores" for="input-mes">Mes a consultar</label>
+              <input type="month" id="input-mes">
+            </div>
+          </div>
+
+          <div class="topbar-acciones">
+            <div class="campana" id="campana-wrap">
+              <button type="button" class="btn-circular" id="btn-campana"
+                      aria-label="Notificaciones de anomalías" aria-expanded="false" aria-controls="campana-menu">
+                <i data-icono="campana" aria-hidden="true"></i>
+                <i class="punto-notificacion" id="punto-notificacion" hidden aria-hidden="true"></i>
+              </button>
+              <div class="campana-menu" id="campana-menu" role="dialog"
+                   aria-label="Notificaciones" hidden></div>
+            </div>
+
+            <button type="button" class="btn btn-primario" id="btn-nuevo-movimiento">
+              <i data-icono="mas" aria-hidden="true"></i>
+              <small class="ocultar-movil">Nuevo movimiento</small>
+              <small class="solo-movil">Nuevo</small>
+            </button>
+
+            <button type="button" class="btn-avatar" id="btn-avatar" title="Ver perfil" aria-label="Ver perfil">
+              <i class="avatar avatar-grande" id="avatar-topbar" aria-hidden="true">?</i>
+            </button>
+          </div>
+        </header>
+
+        <main id="contenido-main" class="main" tabindex="-1"></main>
+      </div>
+    </div>
+
+    <!-- Drawer lateral: nuevo / editar movimiento -->
+    <div id="drawer-raiz"></div>
+  </template>
+
+  <!-- ========================= VISTA: RESUMEN (PANEL) ========================= -->
+  <template id="tpl-panel">
+    <section class="pagina" aria-labelledby="panel-titulo">
+      <h2 id="panel-titulo" class="solo-lectores">Resumen financiero</h2>
+      <!-- KPIs (bento grid del prototipo) -->
+      <ul class="kpi-rejilla" id="kpis">
+        <li>
+          <article class="tarjeta kpi" aria-labelledby="kpi-ing-titulo">
+            <header class="kpi-cabecera">
+              <h3 class="kpi-etiqueta" id="kpi-ing-titulo">Total ingresos</h3>
+              <i class="kpi-icono kpi-icono-ingreso" data-icono="flecha-arriba" aria-hidden="true"></i>
+            </header>
+            <output class="kpi-valor valor-ingreso" id="kpi-ingresos">—</output>
+          </article>
+        </li>
+
+        <li>
+          <article class="tarjeta kpi" aria-labelledby="kpi-gas-titulo">
+            <header class="kpi-cabecera">
+              <h3 class="kpi-etiqueta" id="kpi-gas-titulo">Total gastos</h3>
+              <i class="kpi-icono kpi-icono-gasto" data-icono="flecha-abajo" aria-hidden="true"></i>
+            </header>
+            <output class="kpi-valor valor-gasto" id="kpi-gastos">—</output>
+          </article>
+        </li>
+
+        <li>
+          <article class="tarjeta kpi kpi-destacado" aria-labelledby="kpi-bal-titulo">
+            <header class="kpi-cabecera">
+              <h3 class="kpi-etiqueta kpi-etiqueta-destacada" id="kpi-bal-titulo">Balance del mes</h3>
+              <i class="kpi-icono kpi-icono-balance" data-icono="billetera" aria-hidden="true"></i>
+            </header>
+            <div>
+              <output class="kpi-valor valor-balance" id="kpi-balance">—</output>
+              <output class="chip chip-menta" id="kpi-ahorro" hidden></output>
+            </div>
+          </article>
+        </li>
+
+        <li>
+          <a class="tarjeta kpi kpi-enlace" id="kpi-prediccion" href="#/analisis" aria-labelledby="kpi-pred-titulo">
+            <header class="kpi-cabecera">
+              <h3 class="kpi-etiqueta" id="kpi-pred-titulo">Predicción próximo mes</h3>
+              <i class="kpi-icono" data-icono="tendencia" aria-hidden="true"></i>
+            </header>
+            <div>
+              <output class="kpi-valor texto-flujo" id="kpi-prediccion-valor">—</output>
+              <small class="kpi-nota">Regresión lineal</small>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Banner de anomalías detectadas -->
+      <section class="tarjeta banner-anomalias" id="banner-anomalias" role="status" hidden>
+        <div class="banner-cuerpo">
+          <i class="banner-icono" aria-hidden="true"></i>
+          <div>
+            <h3>Anomalías detectadas</h3>
+            <p id="banner-mensaje"></p>
+          </div>
+        </div>
+        <a class="btn btn-contorno" href="#/analisis">Revisar</a>
+      </section>
+
+      <!-- Gráficos -->
+      <div class="rejilla-graficos">
+        <section class="tarjeta tarjeta-grafico" aria-labelledby="dona-titulo">
+          <h3 id="dona-titulo">Gastos por categoría</h3>
+          <figure class="grafico-envoltura" id="dona-envoltura">
+            <figcaption class="solo-lectores">Distribución de gastos por categoría del mes</figcaption>
+            <canvas id="grafico-dona" role="img"
+                    aria-label="Gráfico de dona con la distribución de gastos por categoría"></canvas>
+          </figure>
+          <ul class="lista-leyenda" id="dona-leyenda"></ul>
+        </section>
+        <section class="tarjeta tarjeta-grafico" aria-labelledby="linea-titulo">
+          <div class="grafico-cabecera">
+            <h3 id="linea-titulo">Ingresos vs. Gastos</h3>
+            <ul class="leyenda-linea">
+              <li class="leyenda-item"><i class="linea-muestra linea-ingreso" aria-hidden="true"></i>Ingresos</li>
+              <li class="leyenda-item"><i class="linea-muestra linea-gasto" aria-hidden="true"></i>Gastos</li>
+            </ul>
+          </div>
+          <figure class="grafico-envoltura">
+            <figcaption class="solo-lectores">Evolución de ingresos y gastos de los últimos seis meses</figcaption>
+            <canvas id="grafico-linea" role="img"
+                    aria-label="Gráfico de líneas con la evolución de ingresos y gastos de los últimos seis meses"></canvas>
+          </figure>
+        </section>
+      </div>
+
+      <!-- Movimientos recientes -->
+      <section class="tarjeta tarjeta-tabla" aria-labelledby="recientes-titulo">
+        <div class="tabla-cabecera">
+          <h3 id="recientes-titulo">Movimientos recientes</h3>
+          <a class="enlace-accion" href="#/movimientos">Ver todos los movimientos <i data-icono="flecha-derecha" aria-hidden="true"></i></a>
+        </div>
+        <div class="tabla-scroll" id="recientes-contenido" aria-live="polite"></div>
+      </section>
+    </section>
+  </template>
+
+  <!-- ========================= VISTA: MOVIMIENTOS ========================= -->
+  <template id="tpl-movimientos">
+    <section class="pagina" aria-labelledby="mov-titulo">
+      <header class="pagina-cabecera">
+        <div>
+          <h2 id="mov-titulo">Movimientos</h2>
+          <p class="pagina-subtitulo">Registra y consulta tus ingresos y gastos</p>
+        </div>
+      </header>
+
+      <!-- Barra de filtros -->
+      <form class="filtros-barra" id="form-filtros" aria-label="Filtros de movimientos">
+        <div class="campo campo-buscar">
+          <i class="campo-icono" data-icono="buscar" aria-hidden="true"></i>
+          <label class="solo-lectores" for="filtro-q">Buscar por descripción</label>
+          <input type="search" id="filtro-q" maxlength="100"
+                 placeholder="Buscar movimientos…">
+        </div>
+        <fieldset class="campo campo-rango-fechas">
+          <legend class="solo-lectores">Rango de fechas</legend>
+          <i class="campo-icono" data-icono="calendario" aria-hidden="true"></i>
+          <label class="solo-lectores" for="filtro-desde">Fecha inicial</label>
+          <input type="date" id="filtro-desde">
+          <small class="separador" aria-hidden="true">–</small>
+          <label class="solo-lectores" for="filtro-hasta">Fecha final</label>
+          <input type="date" id="filtro-hasta">
+        </fieldset>
+        <div class="campo">
+          <label class="solo-lectores" for="filtro-categoria">Filtrar por categoría</label>
+          <select id="filtro-categoria">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label class="solo-lectores" for="filtro-metodo">Filtrar por método de pago</label>
+          <select id="filtro-metodo">
+            <option value="">Todos los métodos</option>
+            <option value="efectivo">Efectivo</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="transferencia">Transferencia</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label class="solo-lectores" for="filtro-moneda">Filtrar por moneda original</label>
+          <select id="filtro-moneda">
+            <option value="">Todas las monedas</option>
+            <option value="COP">COP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+        <fieldset class="conmutador conmutador-compacto" aria-label="Filtrar por tipo">
+          <legend class="solo-lectores">Filtrar por tipo</legend>
+          <button type="button" data-tipo="" aria-pressed="true">Todos</button>
+          <button type="button" data-tipo="ingreso" aria-pressed="false">Ingresos</button>
+          <button type="button" data-tipo="gasto" aria-pressed="false">Gastos</button>
+        </fieldset>
+        <button type="button" class="btn-icono btn-limpiar" id="btn-limpiar-filtros"
+                title="Limpiar filtros" aria-label="Limpiar filtros" hidden>
+          <i data-icono="filtroLimpiar" aria-hidden="true"></i>
+        </button>
+      </form>
+
+      <!-- Tabla -->
+      <div class="tarjeta tarjeta-tabla">
+        <div class="barra-flujo" aria-hidden="true"></div>
+        <div class="tabla-resumen">
+          <output id="tabla-contador">—</output>
+          <output class="tabla-neto" id="tabla-neto">—</output>
+        </div>
+        <div class="tabla-scroll" id="tabla-contenido" aria-live="polite"></div>
+        <nav class="paginacion" id="paginacion" aria-label="Paginación de movimientos"></nav>
+      </div>
+    </section>
+  </template>
+
+  <!-- ========================= VISTA: CATEGORÍAS ========================= -->
+  <template id="tpl-categorias">
+    <section class="pagina" aria-labelledby="cat-titulo">
+      <header class="pagina-cabecera">
+        <div>
+          <h2 id="cat-titulo">Categorías</h2>
+          <p class="pagina-subtitulo">Organiza tus ingresos y gastos por categorías</p>
+        </div>
+        <button type="button" class="btn btn-primario" id="btn-nueva-categoria">
+          <i data-icono="mas" aria-hidden="true"></i>
+          Nueva categoría
+        </button>
+      </header>
+
+      <!-- Conmutador gasto / ingreso -->
+      <div class="pestanas" role="tablist" aria-label="Tipo de categoría">
+        <button type="button" role="tab" data-tipo="gasto" aria-selected="true">Gasto</button>
+        <button type="button" role="tab" data-tipo="ingreso" aria-selected="false">Ingreso</button>
+      </div>
+
+      <ul id="categorias-contenido" class="rejilla-categorias" aria-live="polite"></ul>
+    </section>
+  </template>
+
+  <!-- ========================= VISTA: ANÁLISIS ========================= -->
+  <template id="tpl-analisis">
+    <section class="pagina" aria-labelledby="ana-titulo">
+      <header class="pagina-cabecera">
+        <div>
+          <h2 id="ana-titulo">Análisis</h2>
+          <p class="pagina-subtitulo">Predicción, ahorro y detección de anomalías</p>
+        </div>
+      </header>
+
+      <!-- Hero: predicción de gastos -->
+      <section class="tarjeta hero-prediccion" id="hero-prediccion" aria-live="polite"></section>
+
+      <!-- Ahorro mensual (%) -->
+      <section class="tarjeta tarjeta-grafico" aria-labelledby="ahorro-titulo">
+        <div class="grafico-cabecera">
+          <div>
+            <h3 id="ahorro-titulo">Ahorro mensual (%)</h3>
+            <p class="grafico-subtitulo">Evolución porcentual del ahorro respecto a tus ingresos</p>
+          </div>
+          <ul class="leyenda-linea">
+            <li class="leyenda-item"><i class="punto-muestra punto-ahorro" aria-hidden="true"></i>Ahorro real</li>
+          </ul>
+        </div>
+        <figure class="grafico-envoltura">
+          <figcaption class="solo-lectores">Porcentaje de ahorro mensual</figcaption>
+          <canvas id="grafico-ahorro" role="img"
+                  aria-label="Gráfico de líneas con el porcentaje de ahorro mensual"></canvas>
+        </figure>
+      </section>
+
+      <!-- Tabla de anomalías -->
+      <section class="tarjeta tarjeta-tabla" aria-labelledby="anomalias-titulo">
+        <div class="tabla-cabecera">
+          <div class="tabla-cabecera-titulo">
+            <i class="banner-icono" aria-hidden="true"></i>
+            <div>
+              <h3 id="anomalias-titulo">Anomalías detectadas</h3>
+              <p class="grafico-subtitulo">Desviaciones estadísticas en tus movimientos</p>
+            </div>
+          </div>
+        </div>
+        <div class="tabla-scroll" id="anomalias-contenido" aria-live="polite"></div>
+      </section>
+    </section>
+  </template>
+
+  <!-- ========================= VISTA: METAS DE AHORRO ========================= -->
+  <template id="tpl-metas">
+    <section class="pagina" aria-labelledby="metas-titulo">
+      <header class="pagina-cabecera">
+        <div>
+          <h2 id="metas-titulo">Metas de ahorro</h2>
+          <p class="pagina-subtitulo">Define objetivos y registra tu progreso</p>
+        </div>
+      </header>
+
+      <!-- Total acumulado + CTA -->
+      <section class="tarjeta metas-cabecera" aria-labelledby="metas-total-titulo">
+        <div>
+          <h3 class="kpi-etiqueta" id="metas-total-titulo">Ahorro total acumulado</h3>
+          <output class="metas-total" id="metas-total">—</output>
+        </div>
+        <button type="button" class="btn btn-primario" id="btn-nueva-meta">
+          <i data-icono="mas" aria-hidden="true"></i>
+          Nueva meta
+        </button>
+      </section>
+
+      <fieldset class="conmutador metas-filtro" id="metas-filtro" hidden>
+        <legend class="solo-lectores">Mostrar metas activas o completadas</legend>
+        <button type="button" data-muestra="activas" aria-pressed="true">Activas</button>
+        <button type="button" data-muestra="cumplidas" aria-pressed="false">Completadas</button>
+      </fieldset>
+
+      <ul id="metas-contenido" class="rejilla-metas" aria-live="polite"></ul>
+    </section>
+  </template>
+
+  <!-- ========================= VISTA: PERFIL ========================= -->
+  <template id="tpl-perfil">
+    <section class="pagina pagina-estrecha" aria-labelledby="perf-titulo">
+      <header class="pagina-cabecera">
+        <div>
+          <h2 id="perf-titulo">Perfil</h2>
+          <p class="pagina-subtitulo">Datos de tu cuenta, preferencias y seguridad</p>
+        </div>
+      </header>
+
+      <!-- Tarjeta de perfil (estilo del prototipo) -->
+      <section class="tarjeta tarjeta-perfil" aria-labelledby="perfil-nombre">
+        <div class="perfil-aro">
+          <i class="avatar avatar-xl" id="perfil-avatar" aria-hidden="true">?</i>
+        </div>
+        <h3 class="perfil-nombre" id="perfil-nombre"></h3>
+        <p class="perfil-correo" id="perfil-correo"></p>
+        <p class="chip chip-lila" id="perfil-miembro"></p>
+      </section>
+
+      <!-- Datos de la cuenta -->
+      <section class="tarjeta">
+        <h3>Datos de la cuenta</h3>
+        <form id="form-perfil" novalidate>
+          <div class="campo">
+            <label for="perf-nombre-input">Nombre completo</label>
+            <input id="perf-nombre-input" type="text" minlength="2" maxlength="100" required>
+            <p class="campo-error" id="err-perf-nombre" role="alert" hidden></p>
+          </div>
+          <div class="form-acciones">
+            <button type="submit" class="btn btn-secundario">Guardar cambios</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Preferencias: moneda -->
+      <section class="tarjeta" aria-labelledby="pref-moneda-titulo">
+        <h3 id="pref-moneda-titulo">Preferencias de cuenta</h3>
+        <div class="preferencia-fila">
+          <div class="preferencia-datos">
+            <i class="preferencia-icono icono-moneda" aria-hidden="true"></i>
+            <div>
+              <h4>Moneda de visualización</h4>
+              <p>Convierte tus movimientos, metas y reportes con tasas reales.</p>
+            </div>
+          </div>
+          <div class="campo">
+            <label class="solo-lectores" for="preferencia-moneda">Moneda</label>
+            <select id="preferencia-moneda">
+              <option value="COP">COP — Peso colombiano ($)</option>
+              <option value="USD">USD — Dólar estadounidense ($)</option>
+              <option value="EUR">EUR — Euro (€)</option>
+            </select>
+          </div>
+        </div>
+        <p class="nota">Ejemplos de formato: <data id="ejemplo-cop" value="COP"></data> · <data id="ejemplo-usd" value="USD"></data> · <data id="ejemplo-eur" value="EUR"></data></p>
+      </section>
+
+      <!-- Cambiar contraseña -->
+      <section class="tarjeta">
+        <h3>Cambiar contraseña</h3>
+        <form id="form-password" novalidate>
+          <div class="campo">
+            <label for="pass-actual">Contraseña actual</label>
+            <input id="pass-actual" type="password" autocomplete="current-password" required>
+            <p class="campo-error" id="err-pass-actual" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="pass-nueva">Nueva contraseña</label>
+            <input id="pass-nueva" type="password" autocomplete="new-password" required
+                   minlength="8" maxlength="72" placeholder="mínimo 8 caracteres, 1 letra y 1 número">
+            <p class="campo-error" id="err-pass-nueva" role="alert" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="pass-confirmar">Confirmar nueva contraseña</label>
+            <input id="pass-confirmar" type="password" autocomplete="new-password" required>
+            <p class="campo-error" id="err-pass-confirmar" role="alert" hidden></p>
+          </div>
+          <p class="alerta alerta-error" id="password-alerta" role="alert" hidden></p>
+          <div class="form-acciones">
+            <button type="submit" class="btn btn-secundario">Actualizar contraseña</button>
+          </div>
+        </form>
+        <p class="nota">Al cambiar la contraseña se cierran todas tus sesiones activas
+          (incluida esta) por seguridad.</p>
+      </section>
+
+      <!-- Sesiones -->
+      <section class="tarjeta">
+        <h3>Sesiones</h3>
+        <p class="nota">Cierra tu sesión en todos los dispositivos donde hayas iniciado.</p>
+        <button type="button" class="btn btn-peligro" id="btn-logout-todos">
+          Cerrar sesión en todos los dispositivos
+        </button>
+      </section>
+
+      <!-- Exportar mis datos -->
+      <section class="tarjeta" aria-labelledby="export-titulo">
+        <h3 id="export-titulo">Exportar mis datos</h3>
+        <p class="nota">Descarga tu información financiera en formatos útiles,
+          en tu moneda de visualización y con las tasas aplicadas.</p>
+        <div class="export-acciones">
+          <button type="button" class="btn btn-secundario" id="btn-exportar-csv">
+            <i data-icono="descargar" aria-hidden="true"></i>
+            Descargar CSV
+          </button>
+          <button type="button" class="btn btn-secundario" id="btn-exportar-pdf">
+            <i data-icono="descargar" aria-hidden="true"></i>
+            Descargar PDF
+          </button>
+        </div>
+        <p class="nota" id="exportar-estado" role="status" hidden></p>
+      </section>
+    </section>
+  </template>
+
+  <!-- Chart.js se sirve localmente (sin CDN): funciona sin internet -->
+  <script src="/static/vendor/chart.umd.js"></script>
+  <script type="module" src="/static/js/app.js?v=2.4"></script>
+</body>
+</html>

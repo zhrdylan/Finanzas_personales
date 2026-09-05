@@ -1,0 +1,169 @@
+/* ========================================================================== *
+ * components/forms.css — Campos, etiquetas, alertas y conmutadores.
+ * ========================================================================== */
+
+.campo { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.campo label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-texto-medio);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(194, 198, 215, 0.6);
+  border-radius: var(--radio-control);
+  background: #fff;
+  color: var(--color-texto);
+  font-size: 14px;
+  transition: all var(--transicion);
+}
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--color-primario);
+  outline: 3px solid rgba(0, 83, 206, 0.15);
+}
+.campo input[aria-invalid="true"] { border-color: var(--color-rojo); }
+
+.campo-error {
+  color: var(--color-rojo-fuerte);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Campos con icono (búsqueda, rango de fechas) */
+.campo { position: relative; }
+.campo-icono {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-texto-suave);
+  display: inline-flex;
+  pointer-events: none;
+}
+.campo-icono svg, svg.campo-icono { width: 16px; height: 16px; }
+.campo input[style] , .campo .campo-entrada {
+  padding-left: 0;
+}
+
+/* Alertas de formulario */
+.alerta {
+  padding: 10px 14px;
+  border-radius: var(--radio-control);
+  font-size: 13px;
+  font-weight: 500;
+}
+.alerta-error {
+  background: rgba(255, 218, 214, 0.5);
+  color: var(--color-rojo-fuerte);
+}
+
+/* Nota informativa */
+.nota { font-size: 12px; color: var(--color-texto-suave); }
+
+.form-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+/* Conmutador segmentado (tabs gasto/ingreso, filtro tipo) */
+.conmutador {
+  display: flex;
+  background: var(--color-lavanda);
+  border: 1px solid rgba(194, 198, 215, 0.3);
+  border-radius: var(--radio-control);
+  padding: 4px;
+  gap: 4px;
+}
+.conmutador button {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-texto-medio);
+  transition: all var(--transicion);
+  white-space: nowrap;
+}
+.conmutador button:hover { color: var(--color-texto); }
+.conmutador button[aria-selected="true"],
+.conmutador button[aria-pressed="true"] {
+  background: #fff;
+  color: var(--color-texto);
+  box-shadow: var(--sombra-suave);
+}
+.conmutador button[aria-pressed="true"][data-tipo="ingreso"] { color: var(--color-verde-suave); }
+.conmutador button[aria-pressed="true"][data-tipo="gasto"] { color: var(--color-rojo-fuerte); }
+
+.conmutador-compacto { padding: 3px; }
+.conmutador-compacto button { padding: 6px 12px; font-size: 12px; }
+
+/* Pestanas con subrayado (vista categorías) */
+.pestanas {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid rgba(194, 198, 215, 0.4);
+}
+.pestanas button {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto-medio);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all var(--transicion);
+}
+.pestanas button:hover { color: var(--color-primario); }
+.pestanas button[aria-selected="true"] {
+  color: var(--color-primario);
+  border-bottom-color: var(--color-primario);
+}
+
+/* Campo contraseña con botón ojito */
+.campo-password { position: relative; display: flex; flex-direction: column; }
+.campo-password input { padding-right: 44px; }
+.btn-ojo {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--color-texto-suave);
+  transition: all var(--transicion);
+  z-index: 1;
+}
+.btn-ojo:hover { color: var(--color-primario); background: rgba(0,83,206,0.08); }
+.btn-ojo:focus-visible { outline: 2px solid var(--color-primario); outline-offset: 2px; }
+.btn-ojo svg { width: 18px; height: 18px; }
+
+/* Paleta de colores (modal de categorías) */
+.paleta-colores { display: flex; flex-wrap: wrap; gap: 12px; }
+.color-opcion {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  transition: transform var(--transicion), box-shadow var(--transicion);
+  box-shadow: var(--sombra-suave);
+}
+.color-opcion:hover { transform: scale(1.08); }
+.color-opcion[aria-pressed="true"] {
+  outline: 3px solid var(--color-primario);
+  outline-offset: 2px;
+  transform: scale(1.1);
+}
+.color-opcion svg { width: 16px; height: 16px; stroke-width: 3; }
+
+/* FASE 3: fieldsets semánticos sin borde nativo + iconos <i> */
+fieldset.campo, fieldset.conmutador { border: 0; margin: 0; min-width: 0; }
+fieldset.campo-rango-fechas { margin: 0; }
+i.campo-icono { font-style: normal; }
+small.separador { font-size: inherit; }

@@ -1,0 +1,96 @@
+/* ========================================================================== *
+ * components/modals.css — Diálogos modales accesibles (estilo del prototipo).
+ * ========================================================================== */
+
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 24, 67, 0.4);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 80;
+}
+
+.modal {
+  background: #fff;
+  border-radius: var(--radio-tarjeta);
+  box-shadow: var(--sombra-tarjeta-lg);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  animation: modal-entra 150ms ease-out;
+}
+
+@keyframes modal-entra {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  background: var(--color-nube);
+  border-bottom: 1px solid rgba(194, 198, 215, 0.3);
+}
+.modal-cabecera h2 {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.modal-cabecera h2 svg { width: 18px; height: 18px; color: var(--color-primario); }
+
+.btn-cerrar-modal {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  color: var(--color-texto-suave);
+}
+.btn-cerrar-modal:hover { background: var(--color-lila); color: var(--color-texto); }
+.btn-cerrar-modal svg { width: 16px; height: 16px; }
+
+.modal-cuerpo {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-mensaje { font-size: 14px; color: var(--color-texto-medio); }
+
+.modal-pie {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid rgba(194, 198, 215, 0.3);
+}
+
+/* Modal genérico sin .modal-cuerpo (contenido directo) */
+.modal form { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.modal form .modal-pie {
+  margin: 6px -24px -24px;
+  padding: 14px 24px 20px;
+}
+
+/* FASE 3: <dialog> nativo (reemplaza .modal-fondo) */
+dialog.modal-dialog {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  margin: auto;
+  width: min(452px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  max-height: calc(100dvh - 32px);
+}
+dialog.modal-dialog::backdrop {
+  background: rgba(13, 24, 67, 0.4);
+  backdrop-filter: blur(2px);
+}
+dialog.modal-dialog .modal { animation: modal-entra 150ms ease-out; }
