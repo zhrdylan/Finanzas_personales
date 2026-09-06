@@ -26,6 +26,7 @@ cryptography==50.0.1              # requerido por PyMySQL/aiomysql para
                                   # autenticación caching_sha2_password (MySQL 8+/9.x)
 bcrypt==5.0.0                     # hash de contraseñas (uso directo, sin passlib)
 slowapi==0.1.10                   # rate limiting del login
+google-auth==2.57.1               # verificación de ID tokens de Google (inicio con Google)
 
 # --- Análisis de datos (solo módulo analysis) ---
 pandas==3.0.5

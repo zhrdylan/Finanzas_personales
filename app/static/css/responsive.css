@@ -22,6 +22,17 @@
   .banner-anomalias .btn { align-self: flex-end; }
 
   .toast-zona { bottom: 12px; right: 12px; left: 12px; max-width: none; }
+
+  /* Campana: en móvil el ancla absoluta se sale del viewport; se fija al viewport. */
+  .campana-menu {
+    position: fixed;
+    top: 76px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    max-height: 60vh;
+  }
 }
 
 @media (max-width: 480px) {

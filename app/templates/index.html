@@ -72,6 +72,12 @@
           <button type="submit" class="btn btn-primario btn-bloque">Ingresar a Flux</button>
         </form>
 
+        <div class="google-bloque" id="google-bloque-login" hidden>
+          <p class="google-separador" aria-hidden="true">o continúa con</p>
+          <div id="google-btn-login"></div>
+          <p class="alerta alerta-error" id="google-alerta-login" role="alert" hidden></p>
+        </div>
+
         <form id="form-registro" novalidate hidden>
           <div class="campo">
             <label for="reg-nombre">Nombre completo</label>
@@ -107,6 +113,12 @@
           <p class="alerta alerta-error" id="registro-alerta" role="alert" hidden></p>
           <button type="submit" class="btn btn-primario btn-bloque">Crear cuenta</button>
         </form>
+
+        <div class="google-bloque" id="google-bloque-registro" hidden>
+          <p class="google-separador" aria-hidden="true">o continúa con</p>
+          <div id="google-btn-registro"></div>
+          <p class="alerta alerta-error" id="google-alerta-registro" role="alert" hidden></p>
+        </div>
       </section>
     </main>
   </template>
@@ -535,7 +547,6 @@
             </select>
           </div>
         </div>
-        <p class="nota">Ejemplos de formato: <data id="ejemplo-cop" value="COP"></data> · <data id="ejemplo-usd" value="USD"></data> · <data id="ejemplo-eur" value="EUR"></data></p>
       </section>
 
       <!-- Cambiar contraseña -->

@@ -4,7 +4,7 @@ Aplicación web **full-stack** para la gestión de finanzas personales: registro
 ingresos y gastos, categorías personalizables, **metas de ahorro con progreso**,
 **moneda de visualización configurable (COP / USD / EUR)**, panel financiero con
 gráficos interactivos, **predicción del gasto del próximo mes (regresión lineal)**
-y **detección de movimientos anómalos (IsolationForest / Z-score)**.
+y **detección de movimientos anómalos (IsolationForest / Z modificado con severidad)**.
 
 El proyecto está construido como un **Monolito Modular** con arquitectura en
 capas dentro de cada módulo de negocio, con **MySQL 9.6 como único motor de base
@@ -205,6 +205,9 @@ de CSS/JS solo requieren refrescar el navegador.
 ### 6.1 Autenticación y seguridad
 
 - Registro e inicio de sesión con **bcrypt** (hash de contraseñas).
+- **Inicio con Google** (opcional, `GOOGLE_CLIENT_ID`): botón GIS que verifica
+  el ID token en el backend; crea la cuenta o vincula por correo verificado y
+  emite los mismos tokens (con rotación y logout intactos).
 - JWT con **access token** (30 min) + **refresh token** (7 días) con
   **rotación de un solo uso** y revocación (logout y logout de todos los
   dispositivos). En la BD solo se guarda el **hash SHA-256** del refresh token.
@@ -272,7 +275,8 @@ de CSS/JS solo requieren refrescar el navegador.
 - Gráficos con **Chart.js** servido localmente (funciona sin internet).
 - La predicción usa **regresión lineal** (scikit-learn) sobre los gastos
   mensuales; las anomalías usan **IsolationForest** (≥ 30 muestras) o
-  **Z-score** (10–29). Requieren historial suficiente; si no lo hay, la API
+  **Z modificado (mediana ± MAD, ≥ 3.5)** (10–29) con severidad moderada/alta/crítica.
+  Requieren historial suficiente; si no lo hay, la API
   responde con `disponible: false` y un mensaje claro (sin valores inventados).
 - Frontera de arquitectura: `analysis` **solo lee** datos; nunca modifica
   movimientos. Predicción y anomalías convierten a la moneda pedida
@@ -350,6 +354,7 @@ Documentadas en `.env.example`. Resumen:
 |-------------------------------|-------------|------------------------------------------------------|
 | `SECRET_KEY`                  | Sí          | Clave de firma JWT. Genera una propia (32+ hex).     |
 | `DATABASE_URL`                | Sí          | `mysql+aiomysql://usuario:clave@host:3306/bd`.       |
+| `GOOGLE_CLIENT_ID`            | No          | Client ID de Google (vacío = botón apagado).         |
 | `ALGORITHM`                   | No          | Algoritmo JWT (por defecto `HS256`).                 |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | No          | Vida del access token (30).                          |
 | `REFRESH_TOKEN_EXPIRE_DAYS`   | No          | Vida del refresh token (7).                          |

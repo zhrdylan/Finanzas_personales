@@ -76,8 +76,3 @@ export function iniciales(nombreCompleto) {
     .split(/\s+/).filter(Boolean).slice(0, 2)
     .map((p) => p[0].toUpperCase()).join("") || "?";
 }
-
-/** Ejemplos de formato para la pantalla de preferencias. */
-export function ejemploDeFormato(moneda) {
-  return MONEDAS[moneda]?.ejemplo || "";
-}

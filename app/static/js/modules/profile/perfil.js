@@ -12,7 +12,7 @@ import { api } from "../../services/endpoints.js";
 import { guardarUsuario, limpiarTokens, monedaActual, obtenerUsuario, notificarUsuarioActualizado } from "../../core/sesion.js";
 import { navegar } from "../../core/router.js";
 import { el, ICONOS } from "../../utils/dom.js";
-import { dinero, ejemploDeFormato, iniciales } from "../../utils/formato.js";
+import { iniciales } from "../../utils/formato.js";
 import { alertaFormulario, limpiarErrorEnEntrada, validarFormulario } from "../../utils/formularios.js";
 import { confirmarAccion } from "../../utils/modal.js";
 import { toast } from "../../utils/ui.js";
@@ -67,11 +67,6 @@ export async function montarPerfil(main) {
   const selectMoneda = main.querySelector("#preferencia-moneda");
   selectMoneda.value = usuario.moneda || "COP";
 
-  // Ejemplos de formato (COP / USD / EUR) junto a la preferencia
-  main.querySelector("#ejemplo-cop").textContent = `COP: ${ejemploDeFormato("COP")}`;
-  main.querySelector("#ejemplo-usd").textContent = `USD: ${ejemploDeFormato("USD")}`;
-  main.querySelector("#ejemplo-eur").textContent = `EUR: ${ejemploDeFormato("EUR")}`;
-
   selectMoneda.addEventListener("change", async () => {
     const anterior = monedaActual();
     try {
@@ -79,7 +74,7 @@ export async function montarPerfil(main) {
       const actualizado = { ...obtenerUsuario(), moneda: preferencias.moneda };
       guardarUsuario(actualizado);
       notificarUsuarioActualizado();
-      toast(`Moneda actualizada a ${preferencias.moneda}. Ejemplo: ${dinero(1250000, preferencias.moneda)}`, "exito");
+      toast(`Moneda actualizada a ${preferencias.moneda}`, "exito");
       // Si la moneda anterior era distinta, re-renderizar para re-formatear todo
       if (anterior !== preferencias.moneda) {
         navegar("/perfil");

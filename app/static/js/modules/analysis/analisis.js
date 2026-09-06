@@ -11,8 +11,25 @@ import { dinero, etiquetaMes, fechaCorta } from "../../utils/formato.js";
 import { estadoVacio } from "../../utils/ui.js";
 import { crearLineaPorcentaje, destruir } from "../dashboard/graficos.js";
 
-function svgIcono(nombre) {
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+/** Severidad de la anomalía (backend) con fallback al corte clásico. */
+function severidadDe(a) {
+  if (a.severidad === "moderada" || a.severidad === "alta" || a.severidad === "critica") {
+    return a.severidad;
+  }
+  return a.puntuacion >= 3 ? "critica" : "moderada";
+}
+
+/** Etiqueta legible de severidad (sin tildes en el dato, con tilde al mostrar). */
+function etiquetaSeveridad(a) {
+  return { moderada: "Moderada", alta: "Alta", critica: "Crítica" }[severidadDe(a)];
+}
+
+/** Clase CSS de la severidad. */
+function claseSeveridad(a) {
+  return { moderada: "etiqueta-aviso", alta: "etiqueta-alta", critica: "etiqueta-critico" }[severidadDe(a)];
+}
+
+function svgIcono(nombre) {  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("viewBox", "0 0 24 24");
   svg.setAttribute("fill", "none");
   svg.setAttribute("stroke", "currentColor");
@@ -99,7 +116,8 @@ export async function montarAnalisis(main) {
           el("th", { scope: "col" }, "Categoría"),
           el("th", { scope: "col" }, "Concepto"),
           el("th", { scope: "col", class: "derecha" }, "Monto"),
-          el("th", { scope: "col", class: "centro" }, "Puntuación"))),
+          el("th", { scope: "col", class: "centro" }, "Puntuación"),
+          el("th", { scope: "col", class: "centro" }, "Severidad"))),
         el("tbody", {}, anomalias.items.map((a) => el("tr", {},
           el("td", { class: "celda-fecha" },
             el("time", { datetime: a.fecha }, fechaCorta(a.fecha))),
@@ -109,9 +127,14 @@ export async function montarAnalisis(main) {
             el("data", { value: String(a.monto) }, dinero(a.monto))),
           el("td", { class: "centro" },
             el("data", {
-              class: `etiqueta ${a.puntuacion >= 3 ? "etiqueta-critico" : "etiqueta-aviso"}`,
+              class: `etiqueta ${claseSeveridad(a)}`,
               value: String(a.puntuacion.toFixed(2)),
-            }, a.puntuacion.toFixed(2)))))));
+            }, a.puntuacion.toFixed(2))),
+          el("td", { class: "centro" },
+            el("data", {
+              class: `etiqueta ${claseSeveridad(a)}`,
+              value: severidadDe(a),
+            }, etiquetaSeveridad(a)))))));
 
       contAnomalias.replaceChildren(
         el("div", { class: "tabla-resumen" },

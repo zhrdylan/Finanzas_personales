@@ -25,8 +25,24 @@ async def existe_usuario_o_email(db: AsyncSession, username: str, email: str) ->
     )
 
 
+async def buscar_por_email(db: AsyncSession, email: str) -> User | None:
+    """Busca un usuario por correo (normalizado a minúsculas)."""
+    return await db.scalar(select(User).where(User.email == email.strip().lower()))
+
+
+async def buscar_por_google_sub(db: AsyncSession, google_sub: str) -> User | None:
+    """Busca un usuario por su identificador de Google (`sub`)."""
+    return await db.scalar(select(User).where(User.google_sub == google_sub))
+
+
 async def crear(
-    db: AsyncSession, *, username: str, email: str, nombre_completo: str, hashed_password: str
+    db: AsyncSession,
+    *,
+    username: str,
+    email: str,
+    nombre_completo: str,
+    hashed_password: str | None = None,
+    google_sub: str | None = None,
 ) -> User:
     """Persiste un usuario nuevo (y su fila de preferencias por defecto)."""
     usuario = User(
@@ -34,6 +50,7 @@ async def crear(
         email=email,
         nombre_completo=nombre_completo,
         hashed_password=hashed_password,
+        google_sub=google_sub,
     )
     db.add(usuario)
     await db.flush()

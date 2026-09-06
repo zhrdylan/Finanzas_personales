@@ -56,3 +56,26 @@
 }
 
 .auth-tarjeta .conmutador { width: 100%; margin-top: 8px; }
+
+/* Bloque de inicio con Google (botón GIS renderizado por Google). */
+.google-bloque {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.google-separador {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-texto-suave);
+}
+
+/* Red de seguridad: ni el iframe de Google puede empujar el layout. */
+.google-bloque,
+.google-bloque > div {
+  max-width: 100%;
+  overflow: hidden;
+}

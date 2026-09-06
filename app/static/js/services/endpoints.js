@@ -17,6 +17,10 @@ export const api = {
     metodo: "POST", cuerpo: { refresh_token: refreshToken },
   }),
   logoutTodos: () => peticion("/auth/logout-todos", { metodo: "POST" }),
+  googleConfig: () => peticion("/auth/google/config", { autenticado: false }),
+  loginGoogle: (idToken) => peticion("/auth/google", {
+    metodo: "POST", autenticado: false, cuerpo: { id_token: idToken },
+  }),
 
   /* Usuarios */
   miPerfil: () => peticion("/usuarios/me"),

@@ -7,6 +7,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 Tendencia = Literal["ascendente", "descendente", "estable"]
+Severidad = Literal["moderada", "alta", "critica"]
 
 
 class PrediccionOut(BaseModel):
@@ -32,6 +33,7 @@ class AnomaliaOut(BaseModel):
     categoria: str
     metodo_pago: str
     puntuacion: float  # mayor => más anómalo
+    severidad: Severidad  # banda sobre el Z modificado (comparable entre métodos)
 
 
 class AnomaliasOut(BaseModel):

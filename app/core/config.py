@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = "http://localhost:8000,http://127.0.0.1:8000"
 
     # ------------------------------------------------------------------ #
+    # Inicio de sesión con Google (GIS: el frontend envía el ID token y el
+    # backend verifica su firma). Vacío = funcionalidad apagada.
+    # ------------------------------------------------------------------ #
+    GOOGLE_CLIENT_ID: str = ""
+
+    # ------------------------------------------------------------------ #
     # Rate limiting del login (freno a fuerza bruta)
     # ------------------------------------------------------------------ #
     LOGIN_RATE_LIMIT: str = "5/minute"

@@ -122,6 +122,6 @@ async def anomalias(
     db: DB,
     moneda: Moneda | None = Query(default=None, description="Moneda de visualización"),
 ) -> AnomaliasOut:
-    """Detecta movimientos atípicos con IsolationForest o z-score."""
+    """Detecta movimientos atípicos (IsolationForest o Z modificado con severidad)."""
     destino = await _moneda_vista(db, usuario, moneda)
     return await analysis.detectar_anomalias(db, usuario.id, destino)

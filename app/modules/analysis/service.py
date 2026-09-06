@@ -78,7 +78,7 @@ async def predecir_gasto(db: AsyncSession, usuario_id: int, moneda: str = "COP")
 async def detectar_anomalias(
     db: AsyncSession, usuario_id: int, moneda: str = "COP"
 ) -> AnomaliasOut:
-    """Detección de movimientos anómalos (IsolationForest / z-score)."""
+    """Detección de movimientos anómalos (IsolationForest / Z modificado)."""
     movimientos = await _leer_movimientos(db, usuario_id, moneda)
     return motor.calcular_anomalias(movimientos)
 

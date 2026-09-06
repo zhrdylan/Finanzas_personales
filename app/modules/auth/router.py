@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core.config import settings
@@ -10,7 +10,8 @@ from app.core.deps import DB
 from app.core.rate_limit import limiter
 from app.modules.auth import service
 from app.modules.auth.dependencies import UsuarioActual
-from app.modules.auth.schemas import RefreshRequest, TokenOut
+from app.modules.auth.google import verificar_id_token
+from app.modules.auth.schemas import GoogleConfigOut, GoogleLoginRequest, RefreshRequest, TokenOut
 from app.modules.users.models import User
 from app.modules.users.schemas import UserCreate, UserOut
 
@@ -52,6 +53,45 @@ async def login(
 async def refresh(datos: RefreshRequest, db: DB) -> TokenOut:
     """Intercambia un refresh token válido por un par nuevo (rotación de un solo uso)."""
     return await service.renovar(db, datos)
+
+
+@router.get(
+    "/google/config",
+    response_model=GoogleConfigOut,
+    summary="Config pública del botón de Google",
+)
+async def google_config() -> GoogleConfigOut:
+    """Dice al frontend si el inicio con Google está habilitado y con qué Client ID."""
+    client_id = settings.GOOGLE_CLIENT_ID.strip()
+    if not client_id:
+        return GoogleConfigOut(habilitado=False, client_id=None)
+    return GoogleConfigOut(habilitado=True, client_id=client_id)
+
+
+@router.post(
+    "/google",
+    response_model=TokenOut,
+    summary="Iniciar sesión con Google (ID token GIS)",
+)
+@limiter.limit(settings.LOGIN_RATE_LIMIT)
+async def login_google(
+    request: Request,  # noqa: ARG001 - requerido por slowapi (clave del limiter)
+    datos: GoogleLoginRequest,
+    db: DB,
+) -> TokenOut:
+    """Verifica el ID token de Google y emite los tokens propios de la app.
+
+    Crea la cuenta si no existe o vincula el `sub` si el correo verificado
+    ya estaba registrado. Error siempre genérico (401), sin filtrar la causa.
+    """
+    claims = verificar_id_token(datos.id_token)
+    if claims is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sesión expirada o token inválido. Inicia sesión de nuevo.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return await service.autenticar_con_google(db, claims)
 
 
 @router.post(

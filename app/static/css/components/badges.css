@@ -15,6 +15,7 @@
 
 /* Estados de anomalías */
 .etiqueta-critico { background: var(--color-rojo-suave); color: var(--color-rojo-fuerte); }
+.etiqueta-alta { background: rgba(217, 119, 6, 0.18); color: var(--color-amarillo-fuerte); }
 .etiqueta-aviso { background: var(--color-amarillo-suave); color: var(--color-amarillo-fuerte); }
 .etiqueta-revisado {
   display: inline-flex;

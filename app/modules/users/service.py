@@ -50,6 +50,10 @@ async def actualizar_perfil(db: AsyncSession, usuario: User, datos: UserUpdate) 
 
 async def cambiar_password(db: AsyncSession, usuario: User, datos: PasswordChange) -> None:
     """Cambia la contraseña y revoca todas las sesiones activas."""
+    if usuario.hashed_password is None:
+        # Cuenta creada solo con Google: no hay contraseña actual que pedir.
+        # (Entrar por /auth/google y luego definir una es un flujo futuro.)
+        raise EntradaInvalida("Tu cuenta usa inicio de sesión con Google y no tiene contraseña")
     if not verify_password(datos.password_actual, usuario.hashed_password):
         raise EntradaInvalida("La contraseña actual no es correcta")
     if verify_password(datos.password_nueva, usuario.hashed_password):

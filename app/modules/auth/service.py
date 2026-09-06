@@ -21,6 +21,7 @@ from app.core.security import (
     verify_password,
 )
 from app.modules.auth import repository
+from app.modules.auth.google import derivar_username_base
 from app.modules.auth.schemas import RefreshRequest, TokenOut
 from app.modules.users import repository as usuarios_repo
 from app.modules.users import service as usuarios_service
@@ -71,7 +72,11 @@ async def autenticar(db: AsyncSession, identificador: str, password: str) -> Tok
     """
     usuario = await usuarios_repo.buscar_por_identificador(db, identificador)
 
-    hash_a_verificar = usuario.hashed_password if usuario else _HASH_SENYUELO
+    # Las cuentas solo-Google no tienen hash: se usa el señuelo para igualar
+    # tiempos y responder el mismo 401 genérico (nunca 500).
+    hash_a_verificar = (
+        usuario.hashed_password if (usuario and usuario.hashed_password) else _HASH_SENYUELO
+    )
     password_ok = verify_password(password, hash_a_verificar)
 
     if usuario is None or not password_ok or not usuario.is_active:
@@ -120,3 +125,59 @@ async def cerrar_sesion(db: AsyncSession, usuario: User, datos: RefreshRequest) 
 async def cerrar_sesion_en_todos(db: AsyncSession, usuario: User) -> None:
     """Revoca TODOS los refresh tokens activos del usuario autenticado."""
     await repository.revocar_todos(db, usuario.id)
+
+
+async def autenticar_con_google(db: AsyncSession, claims: dict) -> TokenOut:
+    """Autentica con un ID token de Google ya verificado y emite tokens.
+
+    ``claims`` viene de ``google.verificar_id_token`` (firma, audiencia y
+    expiración ya comprobadas). Aquí solo se aplica la política de cuenta:
+    1. Si el ``sub`` ya está vinculado => entra directo.
+    2. Si el correo verificado existe (cuenta con contraseña) => se vincula
+       el ``sub`` (la contraseña queda intacta) y entra.
+    3. Si no existe => se crea la cuenta (sin contraseña) y entra.
+    El email debe estar verificado por Google; si no, 401 genérico.
+    """
+    google_sub = str(claims.get("sub") or "")
+    email = str(claims.get("email") or "").strip().lower()
+    if not google_sub or not email or claims.get("email_verified") is not True:
+        raise _ERROR_SESION
+
+    usuario = await usuarios_repo.buscar_por_google_sub(db, google_sub)
+    if usuario is None:
+        usuario = await usuarios_repo.buscar_por_email(db, email)
+        if usuario is not None:
+            # Vinculación automática: Google ya probó la propiedad del correo.
+            usuario.google_sub = google_sub
+            await db.flush()
+        else:
+            usuario = await _crear_cuenta_google(
+                db,
+                email=email,
+                google_sub=google_sub,
+                nombre=str(claims.get("name") or "").strip() or email.split("@")[0],
+            )
+
+    if not usuario.is_active:
+        raise _ERROR_SESION
+    return await _emitir_tokens(db, usuario)
+
+
+async def _crear_cuenta_google(
+    db: AsyncSession, *, email: str, google_sub: str, nombre: str
+) -> User:
+    """Crea la cuenta de un usuario nuevo de Google (sin contraseña)."""
+    base = derivar_username_base(email)
+    username = base
+    sufijo = 0
+    while await usuarios_repo.existe_usuario_o_email(db, username, email):
+        sufijo += 1
+        username = f"{base}_{sufijo}"
+    return await usuarios_repo.crear(
+        db,
+        username=username,
+        email=email,
+        nombre_completo=nombre[:100] or username,
+        hashed_password=None,
+        google_sub=google_sub,
+    )

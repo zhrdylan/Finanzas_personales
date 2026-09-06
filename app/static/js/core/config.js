@@ -14,9 +14,9 @@ export const RUTA_INICIO = "/panel";
 /** Formato de las monedas soportadas (locale + decimales).
  *  La moneda es de SOLO VISUALIZACIÓN: no se convierten montos. */
 export const MONEDAS = {
-  COP: { locale: "es-CO", decimales: 0, ejemplo: "$ 1.250.000" },
-  USD: { locale: "en-US", decimales: 2, ejemplo: "$1,250.00" },
-  EUR: { locale: "es-ES", decimales: 2, ejemplo: "1.250,00 €" },
+  COP: { locale: "es-CO", decimales: 0 },
+  USD: { locale: "en-US", decimales: 2 },
+  EUR: { locale: "es-ES", decimales: 2 },
 };
 
 /** Colores por defecto para la paleta de categorías (prototipo). */

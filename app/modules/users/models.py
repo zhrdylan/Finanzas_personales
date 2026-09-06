@@ -27,8 +27,14 @@ class User(Base):
     # Correo único, almacenado en minúsculas
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     nombre_completo: Mapped[str] = mapped_column(String(100), nullable=False)
-    # Solo se persiste el hash bcrypt, JAMÁS la contraseña en claro
-    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    # Solo se persiste el hash bcrypt, JAMÁS la contraseña en claro.
+    # Nullable: las cuentas creadas solo con Google no tienen contraseña.
+    hashed_password: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # Identificador de Google (claim `sub`): vincula la cuenta con Google.
+    # Nullable y único (MySQL permite múltiples NULL en columna UNIQUE).
+    google_sub: Mapped[str | None] = mapped_column(
+        String(255), unique=True, index=True, nullable=True
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
     actualizado: Mapped[datetime] = mapped_column(

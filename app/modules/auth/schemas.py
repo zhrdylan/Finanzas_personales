@@ -18,3 +18,16 @@ class TokenOut(BaseModel):
     refresh_token: str
     token_type: str = "bearer"  # noqa: S105 - tipo de token OAuth2, no credencial
     usuario: UserOut
+
+
+class GoogleLoginRequest(BaseModel):
+    """Cuerpo de /auth/google: ID token obtenido con Google Identity Services."""
+
+    id_token: str = Field(min_length=20, max_length=8192)
+
+
+class GoogleConfigOut(BaseModel):
+    """Config pública para el botón de Google (sin secretos)."""
+
+    habilitado: bool
+    client_id: str | None = None
