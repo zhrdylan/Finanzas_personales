@@ -9,6 +9,7 @@ Flujo de tokens:
 """
 
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import utcnow
@@ -86,11 +87,19 @@ async def autenticar(db: AsyncSession, identificador: str, password: str) -> Tok
 
 
 async def renovar(db: AsyncSession, datos: RefreshRequest) -> TokenOut:
-    """Intercambia un refresh token válido por un par nuevo (rotación)."""
+    """Intercambia un refresh token válido por un par nuevo (rotación).
+
+    La fila del token se lee con bloqueo pesimista (``FOR UPDATE``) dentro
+    de la transacción que gestiona ``get_db``: dos peticiones paralelas con
+    el mismo refresh se serializan y solo una prospera (la otra ve el token
+    ya revocado y recibe 401).
+    """
     usuario_id = decodificar_token(datos.refresh_token, tipo_esperado="refresh")
     registro = None
     if usuario_id is not None:
-        registro = await repository.buscar_por_hash(db, hash_token(datos.refresh_token))
+        registro = await repository.buscar_por_hash_para_actualizar(
+            db, hash_token(datos.refresh_token)
+        )
 
     es_valido = (
         usuario_id is not None
@@ -166,18 +175,48 @@ async def autenticar_con_google(db: AsyncSession, claims: dict) -> TokenOut:
 async def _crear_cuenta_google(
     db: AsyncSession, *, email: str, google_sub: str, nombre: str
 ) -> User:
-    """Crea la cuenta de un usuario nuevo de Google (sin contraseña)."""
+    """Crea la cuenta de un usuario nuevo de Google (sin contraseña).
+
+    Resistente a condiciones de carrera: si dos peticiones paralelas
+    intentan registrar la misma cuenta de Google, se captura IntegrityError
+    en un savepoint para recuperar la cuenta ya creada o reintentar el username.
+    """
     base = derivar_username_base(email)
     username = base
     sufijo = 0
-    while await usuarios_repo.existe_usuario_o_email(db, username, email):
-        sufijo += 1
-        username = f"{base}_{sufijo}"
-    return await usuarios_repo.crear(
-        db,
-        username=username,
-        email=email,
-        nombre_completo=nombre[:100] or username,
-        hashed_password=None,
-        google_sub=google_sub,
-    )
+
+    for _ in range(10):
+        while await usuarios_repo.existe_usuario_o_email(db, username, email):
+            existente = await usuarios_repo.buscar_por_email(db, email)
+            if existente is not None:
+                if existente.google_sub != google_sub:
+                    existente.google_sub = google_sub
+                    await db.flush()
+                return existente
+            sufijo += 1
+            username = f"{base}_{sufijo}"
+
+        try:
+            async with db.begin_nested():
+                return await usuarios_repo.crear(
+                    db,
+                    username=username,
+                    email=email,
+                    nombre_completo=nombre[:100] or username,
+                    hashed_password=None,
+                    google_sub=google_sub,
+                )
+        except IntegrityError:
+            existente = await usuarios_repo.buscar_por_email(db, email)
+            if existente is not None:
+                if existente.google_sub != google_sub:
+                    existente.google_sub = google_sub
+                    await db.flush()
+                return existente
+            sufijo += 1
+            username = f"{base}_{sufijo}"
+
+    existente = await usuarios_repo.buscar_por_email(db, email)
+    if existente is not None:
+        return existente
+    raise _ERROR_SESION

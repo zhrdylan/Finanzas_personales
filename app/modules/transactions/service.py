@@ -72,14 +72,6 @@ async def obtener(db: AsyncSession, usuario_id: int, movimiento_id: int) -> Tran
     return movimiento
 
 
-def _normalizar_notas(valor: str | None) -> str | None:
-    """Normaliza notas: recorta espacios y convierte "" en None."""
-    if valor is None:
-        return None
-    texto = valor.strip()
-    return texto or None
-
-
 async def crear(db: AsyncSession, usuario_id: int, datos: MovimientoCreate) -> Transaction:
     """Registra un ingreso o gasto asociado al usuario autenticado."""
     await _validar_categoria(db, usuario_id, datos.categoria_id, datos.tipo)
@@ -92,8 +84,8 @@ async def crear(db: AsyncSession, usuario_id: int, datos: MovimientoCreate) -> T
             "monto": datos.monto,
             "moneda": datos.moneda,
             "fecha": datos.fecha,
-            "descripcion": datos.descripcion or "",
-            "notas": _normalizar_notas(datos.notas),
+            "descripcion": datos.descripcion,
+            "notas": datos.notas,
             "metodo_pago": datos.metodo_pago,
         },
     )
@@ -113,12 +105,7 @@ async def actualizar(
         await _validar_categoria(db, usuario_id, categoria_final, tipo_final)
 
     for campo, valor in cambios.items():
-        if campo == "notas":
-            setattr(movimiento, campo, _normalizar_notas(valor))
-        else:
-            setattr(movimiento, campo, valor)
-    if cambios.get("descripcion") is None and "descripcion" in cambios:
-        movimiento.descripcion = ""
+        setattr(movimiento, campo, valor)
 
     await db.flush()
     if "categoria_id" in cambios:

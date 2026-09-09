@@ -30,6 +30,7 @@ from app.core.rate_limit import limiter
 from app.modules.auth.router import router as auth_router
 from app.modules.categories.router import router as categories_router
 from app.modules.dashboard.router import router as dashboard_router
+from app.modules.exchange_rates.client import close_http_client
 from app.modules.exchange_rates.exceptions import TasaNoDisponible
 from app.modules.exchange_rates.router import router as tasas_router
 from app.modules.exports.router import router as exports_router
@@ -68,8 +69,9 @@ async def lifespan(app: FastAPI):
         settings.APP_VERSION,
     )
     yield
+    await close_http_client()
     await engine.dispose()
-    logger.info("Conexiones a la base de datos cerradas.")
+    logger.info("Conexiones a la base de datos y clientes HTTP cerrados.")
 
 
 app = FastAPI(

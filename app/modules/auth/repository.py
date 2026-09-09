@@ -14,8 +14,23 @@ async def guardar_refresh(db: AsyncSession, usuario_id: int, token_hash: str, ex
 
 
 async def buscar_por_hash(db: AsyncSession, token_hash: str) -> RefreshToken | None:
-    """Busca un refresh token por su hash SHA-256."""
+    """Busca un refresh token por su hash SHA-256 (lectura sin bloqueo)."""
     return await db.scalar(select(RefreshToken).where(RefreshToken.token_hash == token_hash))
+
+
+async def buscar_por_hash_para_actualizar(
+    db: AsyncSession, token_hash: str
+) -> RefreshToken | None:
+    """Busca un refresh token bloqueando la fila (``SELECT ... FOR UPDATE``).
+
+    Debe usarse en ``renovar()``: el bloqueo se mantiene hasta que ``get_db``
+    hace commit/rollback al final de la petición, por lo que dos renovaciones
+    concurrentes con el mismo token se serializan — la segunda ve la fila ya
+    revocada y recibe 401 en vez de emitir un segundo par de tokens.
+    """
+    return await db.scalar(
+        select(RefreshToken).where(RefreshToken.token_hash == token_hash).with_for_update()
+    )
 
 
 async def revocar(db: AsyncSession, registro: RefreshToken) -> None:

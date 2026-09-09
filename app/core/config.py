@@ -11,6 +11,7 @@ ni fallback a SQLite u otro motor; la URL debe empezar por ``mysql+aiomysql``.
 import logging
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 logger = logging.getLogger("app.config")
@@ -34,7 +35,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------ #
     SECRET_KEY: str = ""  # OBLIGATORIA; fallo de arranque si falta
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30  # vida corta del token de acceso
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 10  # vida corta del token de acceso (reducida de 30 a 10 min)
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7  # vida del token de renovación
 
     # ------------------------------------------------------------------ #
@@ -52,6 +53,11 @@ class Settings(BaseSettings):
     # backend verifica su firma). Vacío = funcionalidad apagada.
     # ------------------------------------------------------------------ #
     GOOGLE_CLIENT_ID: str = ""
+
+    @field_validator("GOOGLE_CLIENT_ID", mode="before")
+    @classmethod
+    def _limpiar_client_id(cls, valor: str | None) -> str:
+        return valor.strip() if isinstance(valor, str) else (valor or "")
 
     # ------------------------------------------------------------------ #
     # Rate limiting del login (freno a fuerza bruta)

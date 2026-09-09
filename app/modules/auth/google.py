@@ -51,7 +51,7 @@ def verificar_id_token(id_token: str) -> dict | None:
         claims = google_id_token.verify_oauth2_token(
             id_token,
             google_requests.Request(),
-            settings.GOOGLE_CLIENT_ID,
+            settings.GOOGLE_CLIENT_ID.strip(),
         )
     except Exception as exc:  # noqa: BLE001 - cualquier fallo => token inválido
         logger.warning("ID token de Google inválido: %s", type(exc).__name__)

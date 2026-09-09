@@ -29,6 +29,25 @@ def _validar_fecha(valor: date) -> date:
     return valor
 
 
+def _normalizar_descripcion(valor: str | None) -> str:
+    """Normaliza descripción: recorta espacios y convierte None en cadena vacía."""
+    if valor is None:
+        return ""
+    if isinstance(valor, str):
+        return valor.strip()
+    return valor
+
+
+def _normalizar_notas(valor: str | None) -> str | None:
+    """Normaliza notas: recorta espacios y convierte "" en None."""
+    if valor is None:
+        return None
+    if isinstance(valor, str):
+        texto = valor.strip()
+        return texto or None
+    return valor
+
+
 class MovimientoBase(BaseModel):
     """Campos comunes de un movimiento."""
 
@@ -44,7 +63,7 @@ class MovimientoBase(BaseModel):
     fecha: date
     moneda: Moneda = Field(default="COP", description="Moneda original del registro")
     descripcion: str | None = Field(
-        default=None, max_length=255, description="Concepto del movimiento"
+        default="", max_length=255, description="Concepto del movimiento"
     )
     notas: str | None = Field(
         default=None, max_length=500, description="Notas adicionales opcionales"
@@ -52,6 +71,8 @@ class MovimientoBase(BaseModel):
     metodo_pago: MetodoPago
 
     _v_fecha = field_validator("fecha")(_validar_fecha)
+    _v_descripcion = field_validator("descripcion", mode="before")(_normalizar_descripcion)
+    _v_notas = field_validator("notas", mode="before")(_normalizar_notas)
 
 
 class MovimientoCreate(MovimientoBase):
@@ -71,6 +92,8 @@ class MovimientoUpdate(BaseModel):
     metodo_pago: MetodoPago | None = None
 
     _v_fecha = field_validator("fecha")(_validar_fecha)
+    _v_descripcion = field_validator("descripcion", mode="before")(_normalizar_descripcion)
+    _v_notas = field_validator("notas", mode="before")(_normalizar_notas)
 
 
 class MovimientoOut(BaseModel):

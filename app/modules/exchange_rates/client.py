@@ -22,6 +22,24 @@ from app.modules.exchange_rates.exceptions import ProveedorTasasCaido, TasaSinDa
 
 logger = logging.getLogger("app.exchange_rates.client")
 
+_cliente_compartido: httpx.AsyncClient | None = None
+
+
+def get_http_client() -> httpx.AsyncClient:
+    """Devuelve o inicializa el cliente HTTP persistente para tasas."""
+    global _cliente_compartido
+    if _cliente_compartido is None or _cliente_compartido.is_closed:
+        _cliente_compartido = httpx.AsyncClient(timeout=settings.EXCHANGE_TIMEOUT_S)
+    return _cliente_compartido
+
+
+async def close_http_client() -> None:
+    """Cierra el cliente HTTP persistente si está abierto (invocado en lifespan)."""
+    global _cliente_compartido
+    if _cliente_compartido is not None and not _cliente_compartido.is_closed:
+        await _cliente_compartido.aclose()
+        _cliente_compartido = None
+
 
 def _validar_respuesta(datos: dict, base: str, quote: str) -> tuple[Decimal, date]:
     """Valida el payload v2 y devuelve (tasa, fecha) con tipos correctos."""
@@ -47,9 +65,9 @@ async def obtener_tasa(base: str, quote: str, fecha: date | None = None) -> tupl
     quote = quote.upper()
     url = f"{settings.EXCHANGE_BASE_URL.rstrip('/')}/rate/{base}/{quote}"
     params = {"date": fecha.isoformat()} if fecha is not None else None
+    http = get_http_client()
     try:
-        async with httpx.AsyncClient(timeout=settings.EXCHANGE_TIMEOUT_S) as http:
-            respuesta = await http.get(url, params=params)
+        respuesta = await http.get(url, params=params)
     except httpx.HTTPError as exc:
         logger.warning("Proveedor de tasas sin respuesta (%s->%s): %s", base, quote, exc)
         raise ProveedorTasasCaido from exc

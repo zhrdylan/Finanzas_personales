@@ -91,13 +91,15 @@ async def actualizar(db: AsyncSession, usuario_id: int, meta_id: int, datos: Met
 async def registrar_aporte(
     db: AsyncSession, usuario_id: int, meta_id: int, datos: AporteCreate
 ) -> MetaOut:
-    """Registra progreso: suma el aporte al ahorro acumulado de la meta."""
-    meta = await repository.obtener_propia(db, usuario_id, meta_id)
+    """Registra progreso con incremento atómico a nivel SQL.
+
+    Delega la suma al motor (``UPDATE ... SET monto_actual =
+    monto_actual + :monto``) en vez de leer-modificar-escribir en memoria,
+    eliminando la condición de carrera de aportes concurrentes.
+    """
+    meta = await repository.abonar_atomico(db, usuario_id, meta_id, datos.monto)
     if meta is None:
         raise NoEncontrado("Meta no encontrada")
-
-    meta.monto_actual = Decimal(str(meta.monto_actual)) + datos.monto
-    await db.flush()
     return a_out(meta)
 
 
